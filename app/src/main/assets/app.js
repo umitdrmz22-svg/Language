@@ -4,6 +4,7 @@ const courseCodes = ["en", "de", "es"];
 const tabs = [
   ["today", "book"],
   ["course", "layers"],
+  ["atlas", "search"],
   ["review", "repeat"],
   ["journal", "pen"],
 ];
@@ -145,71 +146,67 @@ function courseLine() {
 function dashboard() {
   const i = currentUnit(),
     u = units[i],
-    j = units[journalId()];
+    p = track(),
+    pair = names[state.from] + " → " + names[state.to];
+  const cta =
+    p.session?.unit === i || p.paused?.[i]
+      ? "resume"
+      : p.done.includes(i)
+        ? "practice"
+        : "start";
   return (
-    "<h1>" +
-    t("desk") +
-    '</h1><section class="hero"><div class="line"><span class="pair">' +
-    names[state.from] +
-    " → " +
-    names[state.to] +
-    "</span>" +
-    button("pair", t("pair"), "settings", "hero-edit") +
-    '</div><div class="ticket"><span class="ticketcode">' +
+    '<div class="split"><h1>' +
+    t("today") +
+    "</h1>" +
+    button("pair", pair, "globe", "routebtn") +
+    "</div>" +
+    '<section class="citycard city-' +
+    state.to +
+    '"><div class="citybody"><span class="leveltag">' +
     u.level +
-    "</span><div><h2>" +
+    " · " +
+    t("lesson") +
+    " " +
+    (ids().indexOf(i) + 1) +
+    "</span><h2>" +
     esc(u.title[state.to]) +
-    '</h2><p class="meta">' +
+    "</h2><p>" +
     esc(u.title[state.from]) +
-    "</p></div></div>" +
-    button(
-      "lesson",
-      t(
-        track().session?.unit === i || track().paused?.[i]
-          ? "resume"
-          : track().done.includes(i)
-            ? "practice"
-            : "start",
-      ),
-      "arrow",
-      "primary",
-      i,
-    ) +
-    "</section>" +
-    '<div class="split"><h2>' +
-    t("practiceToday") +
-    '</h2><span class="meta">' +
-    track().done.length +
-    " / " +
-    units.length +
+    "</p>" +
+    button("lesson", t(cta), "arrow", "primary", i) +
+    "</div></section>" +
+    '<button class="atlaslink" data-act="tab" data-val="atlas"><span class="atlasglyph">Aa</span><span class="grow"><strong>' +
+    t("atlas") +
+    "</strong><small>" +
+    lexCount(10000) +
     " · " +
-    t("complete") +
-    "</span></div>" +
-    '<button class="item" data-act="tab" data-val="journal"><span class="listicon">' +
-    icon("pen") +
-    '</span><span class="grow">' +
-    t("daily") +
-    "<small>" +
-    esc(j.title[state.to]) +
+    t("lexWords") +
     "</small></span>" +
-    icon("next") +
-    "</button>" +
-    '<button class="item" data-act="tab" data-val="review"><span class="listicon">' +
-    icon("repeat") +
-    '</span><span class="grow">' +
-    t("review") +
-    "<small>" +
-    t("due") +
-    " · " +
-    due().length +
-    "</small></span>" +
-    icon("next") +
+    icon("arrow") +
     "</button>" +
     '<section class="section"><div class="split"><h2>' +
-    t("yourlevel") +
-    "</h2></div>" +
+    t("studyPlan") +
+    "</h2><small>" +
+    p.done.length +
+    " / " +
+    units.length +
+    "</small></div>" +
     levelButtons() +
-    "</section>"
+    "</section>" +
+    '<section class="section"><h2>' +
+    t("toolbox") +
+    '</h2><div class="toolgrid">' +
+    button("tab", t("journal"), "pen", "tool", "journal") +
+    button(
+      "tab",
+      t("review") + " · " + due().length,
+      "repeat",
+      "tool",
+      "review",
+    ) +
+    button("grammar", t("grammar"), "book", "tool") +
+    button("dictation", t("listening"), "volume", "tool") +
+    "</div></section>"
   );
 }
 function courseView() {
@@ -231,6 +228,9 @@ function courseView() {
     " · " +
     t("complete") +
     "</span></div>" +
+    '<p class="levelobjective">' +
+    esc(checklist(units[ids()[0]])) +
+    "</p>" +
     ids().map(lessonRow).join("") +
     '</section><div class="actions tools">' +
     button("grammar", t("grammar"), "book", "soft") +
@@ -239,11 +239,18 @@ function courseView() {
   );
 }
 let dictation = 0;
+const grammarIndex = () => track().ruleIndex?.[track().level] || 0;
 function ruleDialog(choice = null) {
-  const r = grammar[track().level][state.to];
+  const l = track().level,
+    rules = [grammar[l][state.to], ...additionalGrammar[l][state.to]];
+  const r = rules[grammarIndex() % rules.length];
   pop(
     '<span class="badge">' +
       track().level +
+      " · " +
+      (grammarIndex() + 1) +
+      " / " +
+      rules.length +
       "</span><h2>" +
       t("grammar") +
       "</h2><p>" +
@@ -264,6 +271,9 @@ function ruleDialog(choice = null) {
           '">' +
           esc(r.why[state.from]) +
           "</p></div>") +
+      (choice === null
+        ? ""
+        : button("ruleNext", t("next"), "arrow", "primary")) +
       button("close", t("close"), "", "soft"),
   );
 }
@@ -344,6 +354,20 @@ function promptEditor(u, text) {
     '">' +
     esc(u.prompt[state.from]) +
     "</p>" +
+    '<details class="wordhints"><summary>' +
+    t("hints") +
+    "</summary>" +
+    u.words[state.to]
+      .map(
+        (w, i) =>
+          "<div><b>" +
+          esc(w) +
+          "</b><span>" +
+          esc(u.words[state.from][i]) +
+          "</span></div>",
+      )
+      .join("") +
+    "</details>" +
     field(
       t("draft") + " · " + names[state.to],
       '<textarea id="draft" lang="' +
@@ -351,7 +375,18 @@ function promptEditor(u, text) {
         '" rows="5">' +
         esc(text) +
         "</textarea>",
-    )
+    ) +
+    '<div class="writingstats"><span id="written">' +
+    text.trim().split(/\s+/).filter(Boolean).length +
+    "</span> " +
+    t("countWords") +
+    " · " +
+    t("wordGoal") +
+    " " +
+    ["10–25", "25–50", "50–90", "90–150", "150–220", "200–300"][
+      levels.indexOf(u.level)
+    ] +
+    "</div>"
   );
 }
 function journalView() {
@@ -573,7 +608,15 @@ function lessonView() {
   }
   if (s.feedback)
     body += button("next", t(n === 6 ? "finish" : "next"), "arrow", "primary");
-  return intro + body;
+  return (
+    intro +
+    '<div class="lessoncontext">' +
+    esc(u.title[state.to]) +
+    " · " +
+    esc(u.title[state.from]) +
+    "</div>" +
+    body
+  );
 }
 function render() {
   head("Language", tabs, tab);
@@ -585,7 +628,10 @@ function render() {
         course: courseView,
         review: reviewView,
         journal: journalView,
+        atlas: atlasView,
       }[tab]();
+  $("#screen").dataset.view = studying ? "lesson" : tab;
+  if (tab === "atlas" && !studying) bindAtlas();
   if (studying && track().session.feedback) {
     document
       .querySelectorAll("[data-act=choice],#translation")
@@ -594,6 +640,11 @@ function render() {
   const area = $("#draft");
   if (area)
     area.oninput = () => {
+      if ($("#written"))
+        $("#written").textContent = area.value
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean).length;
       if (studying) {
         track().session.draft = area.value;
         store();
@@ -643,6 +694,10 @@ function speak(value) {
 }
 window.speechUnavailable = () => notify(t("speakerr"));
 function action(a, v) {
+  if (a.startsWith("lex")) {
+    lexAction(a, v);
+    return;
+  }
   const p = track(),
     s = p.session,
     u = s ? units[s.unit] : null;
@@ -659,6 +714,16 @@ function action(a, v) {
     case "grammar":
       ruleDialog();
       return;
+    case "ruleNext": {
+      const p = track();
+      p.ruleIndex ??= {};
+      p.ruleIndex[p.level] =
+        (grammarIndex() + 1) %
+        (1 + additionalGrammar[p.level][state.to].length);
+      store();
+      ruleDialog();
+      return;
+    }
     case "ruleChoice":
       ruleDialog(v);
       return;
@@ -689,6 +754,8 @@ function action(a, v) {
     case "apply":
       state.from = $("#from").value;
       state.to = $("#to").value;
+      atlas.key = "";
+      atlas.playing = false;
       closePop();
       reviewCard = null;
       journalModel = false;
@@ -805,6 +872,10 @@ window.appBack = () => {
   }
   if (studying) {
     action("pause");
+    return true;
+  }
+  if (tab === "atlas" && atlas.playing) {
+    lexAction("lexPause");
     return true;
   }
   if (tab !== "today") {

@@ -11,9 +11,13 @@ Reklamsız, çevrimdışı bir Android dil çalışma defteri. Uygulama dili İn
 5. **Günlük** seçilen seviyeden her gün bir konu açar. Konu değiştirilebilir. Yazılar cihazda tarih, ders ve öğrenme yönüyle saklanır. Örnek yanıt ve seviyeye özgü kontrol ölçütü öğrencinin kendi yazısını değerlendirmesine yardım eder.
 6. **Kurs** sekmesindeki dil bilgisi alıştırmaları hedef dile göre değişir. **Dinleme ve dikte** bölümünde bir cümleyi dinleyip yazabilir ve aslıyla karşılaştırabilirsin. Ses için Android'de ilgili dile ait yerel bir sesin kurulu olması gerekir.
 
+## Kelime Atlası
+
+Her öğrenme yönünde 10.000 farklı hedef kelimeyi çevrimdışı ara. Kelime veya anlamına göre arayabilir, sözcük türünü seçebilir, kelimeyi kaydedebilir ve on soruya kadar süren eşleştirme ve yazım turları yapabilirsin. Altı konu destesinde iki dilde örnek cümle bulunur. Anlamlar, varsa söyleniş bilgisi ve çekimli biçimler kelime ayrıntısında açılır. Zamanı gelen kelimeler ve duraklatılan tur ilgili öğrenme yönünde saklanır. Atlas kelimeleri tek tek CEFR seviyelendirmesinden geçmemiştir. [Veri ve görsel kaynakları](WORD-SOURCES.md).
+
 ## İçerik kapsamı
 
-Altı yön desteklenir: DE→ES, ES→DE, DE→EN, EN→DE, EN→ES ve ES→EN. Aynı senaryonun farklı yönleri aynı özgün içerikten üretilir. Her yönde 24 ders, 96 kelime/ifade konumu ve 24 yazma görevi vardır. Toplamda 18 hedef dile özgü dil bilgisi sorusu bulunur.
+Altı yön desteklenir: DE→ES, ES→DE, DE→EN, EN→DE, EN→ES ve ES→EN. Aynı senaryonun farklı yönleri aynı özgün içerikten üretilir. Her yönde 24 ders, 96 kelime/ifade konumu ve 24 yazma görevi vardır. Her hedef dil ve seviyede üç açıklamalı soru, toplamda 54 dil bilgisi sorusu bulunur.
 
 | Seviye | Dört dersin konusu | Yazarken odak |
 | --- | --- | --- |
