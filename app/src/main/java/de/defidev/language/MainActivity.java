@@ -24,7 +24,7 @@ public final class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         web = new WebView(this);
-        web.setBackgroundColor(0xfff8fafc);
+        web.setBackgroundColor(0xfffff9ee);
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setDomStorageEnabled(true);
         web.getSettings().setAllowFileAccess(false);
@@ -42,6 +42,9 @@ public final class MainActivity extends Activity {
                         if (path.matches("/words/(deen|dees|ende|enes|esde|esen)[.]json")) {
                             return new WebResourceResponse("application/json", "UTF-8", 200, "OK", java.util.Collections.emptyMap(),
                                     getAssets().open(path.substring(1)));
+                        }
+                        if (path.equals("/display.ttf")) {
+                            return new WebResourceResponse("font/ttf", null, 200, "OK", java.util.Collections.emptyMap(), getAssets().open("display.ttf"));
                         }
                         if (path.matches("/(de|en|es)[.]webp")) {
                             return new WebResourceResponse("image/webp", null, 200, "OK", java.util.Collections.emptyMap(), getAssets().open(path.substring(1)));
@@ -61,12 +64,12 @@ public final class MainActivity extends Activity {
         web.addJavascriptInterface(new Device(), "Device");
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
                 View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        getWindow().setStatusBarColor(0xfff8fafc);
-        getWindow().setNavigationBarColor(0xfff8fafc);
+        getWindow().setStatusBarColor(0xfffff9ee);
+        getWindow().setNavigationBarColor(0xfffff9ee);
         // Size the WebView itself to the usable rectangle. Padding applied directly to
         // WebView does not reliably move its visual viewport on Samsung devices.
         FrameLayout viewport = new FrameLayout(this);
-        viewport.setBackgroundColor(0xfff8fafc);
+        viewport.setBackgroundColor(0xfffff9ee);
         viewport.addView(web, new FrameLayout.LayoutParams(-1, -1));
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(false);

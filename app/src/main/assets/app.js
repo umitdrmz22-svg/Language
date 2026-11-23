@@ -143,72 +143,6 @@ function courseLine() {
     "</div>"
   );
 }
-function dashboard() {
-  const i = currentUnit(),
-    u = units[i],
-    p = track(),
-    pair = names[state.from] + " → " + names[state.to];
-  const cta =
-    p.session?.unit === i || p.paused?.[i]
-      ? "resume"
-      : p.done.includes(i)
-        ? "practice"
-        : "start";
-  return (
-    '<div class="split"><h1>' +
-    t("today") +
-    "</h1>" +
-    button("pair", pair, "globe", "routebtn") +
-    "</div>" +
-    '<section class="citycard city-' +
-    state.to +
-    '"><div class="citybody"><span class="leveltag">' +
-    u.level +
-    " · " +
-    t("lesson") +
-    " " +
-    (ids().indexOf(i) + 1) +
-    "</span><h2>" +
-    esc(u.title[state.to]) +
-    "</h2><p>" +
-    esc(u.title[state.from]) +
-    "</p>" +
-    button("lesson", t(cta), "arrow", "primary", i) +
-    "</div></section>" +
-    '<button class="atlaslink" data-act="tab" data-val="atlas"><span class="atlasglyph">Aa</span><span class="grow"><strong>' +
-    t("atlas") +
-    "</strong><small>" +
-    lexCount(10000) +
-    " · " +
-    t("lexWords") +
-    "</small></span>" +
-    icon("arrow") +
-    "</button>" +
-    '<section class="section"><div class="split"><h2>' +
-    t("studyPlan") +
-    "</h2><small>" +
-    p.done.length +
-    " / " +
-    units.length +
-    "</small></div>" +
-    levelButtons() +
-    "</section>" +
-    '<section class="section"><h2>' +
-    t("toolbox") +
-    '</h2><div class="toolgrid">' +
-    button("tab", t("journal"), "pen", "tool", "journal") +
-    button(
-      "tab",
-      t("review") + " · " + due().length,
-      "repeat",
-      "tool",
-      "review",
-    ) +
-    button("grammar", t("grammar"), "book", "tool") +
-    button("dictation", t("listening"), "volume", "tool") +
-    "</div></section>"
-  );
-}
 function courseView() {
   return (
     "<h1>" +
@@ -620,17 +554,32 @@ function lessonView() {
 }
 function render() {
   head("Language", tabs, tab);
-  $("#nav").hidden = studying;
-  $("#screen").innerHTML = studying
-    ? lessonView()
-    : {
-        today: dashboard,
-        course: courseView,
-        review: reviewView,
-        journal: journalView,
-        atlas: atlasView,
-      }[tab]();
-  $("#screen").dataset.view = studying ? "lesson" : tab;
+  $("#nav").hidden = studying || inPractice || conversationOpen;
+  $("#screen").innerHTML = conversationOpen
+    ? conversationView()
+    : inPractice
+      ? questionView()
+      : studying
+        ? lessonView()
+        : {
+            today: practiceHome,
+            course: courseView,
+            review: reviewView,
+            journal: journalView,
+            atlas: atlasView,
+          }[tab]();
+  $("#screen").dataset.view = conversationOpen
+    ? "conversation"
+    : inPractice
+      ? "practice"
+      : studying
+        ? "lesson"
+        : tab;
+  if (conversationOpen) return;
+  if (inPractice) {
+    bindPractice();
+    return;
+  }
   if (tab === "atlas" && !studying) bindAtlas();
   if (studying && track().session.feedback) {
     document
@@ -694,6 +643,14 @@ function speak(value) {
 }
 window.speechUnavailable = () => notify(t("speakerr"));
 function action(a, v) {
+  if (a.startsWith("talk")) {
+    talkAction(a, v);
+    return;
+  }
+  if (/^p[A-Z]/.test(a)) {
+    practiceAction(a, v);
+    return;
+  }
   if (a.startsWith("lex")) {
     lexAction(a, v);
     return;
@@ -762,7 +719,7 @@ function action(a, v) {
       break;
     case "level":
       p.level = v;
-      tab = "course";
+      if (tab !== "today") tab = "course";
       break;
     case "lesson":
       start(Number(v));
@@ -868,6 +825,14 @@ function action(a, v) {
 window.appBack = () => {
   if ($("#dialog").open) {
     closePop();
+    return true;
+  }
+  if (conversationOpen) {
+    talkAction("talkExit");
+    return true;
+  }
+  if (inPractice) {
+    practiceAction("pPause");
     return true;
   }
   if (studying) {

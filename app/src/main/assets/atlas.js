@@ -27,7 +27,7 @@ const lexDue = (k) => (atlasStudy().progress[k]?.due ?? Infinity) <= Date.now();
 const lexCount = (n) => n.toLocaleString(ui);
 function ensureAtlas() {
   const key = state.to + state.from;
-  if (atlas.key === key) return;
+  if (atlas.key === key) return atlas.loading;
   Object.assign(atlas, {
     key,
     rows: null,
@@ -40,7 +40,7 @@ function ensureAtlas() {
     limit: 25,
     playing: false,
   });
-  fetch("words/" + key + ".json")
+  atlas.loading = fetch("words/" + key + ".json")
     .then((r) => {
       if (!r.ok) throw Error(r.status);
       return r.json();
@@ -60,6 +60,7 @@ function ensureAtlas() {
         if (tab === "atlas") render();
       }
     });
+  return atlas.loading;
 }
 function selectedRows() {
   const q = fold(atlas.query.trim()),
@@ -394,6 +395,20 @@ function roundView() {
       : "")
   );
 }
+function gradeAtlasWord(w, correct) {
+  const progress = atlasStudy().progress;
+  const old = Object.hasOwn(progress, w) ? progress[w].stage : -1;
+  const stage = correct ? Math.min(old + 1, strengthDays.length - 1) : -1;
+  Object.defineProperty(progress, w, {
+    value: {
+      stage,
+      due: Date.now() + (correct ? strengthDays[stage] * 86400000 : 600000),
+    },
+    writable: true,
+    configurable: true,
+    enumerable: true,
+  });
+}
 function lexAction(a, v) {
   const p = atlasStudy(),
     s = p.round;
@@ -473,18 +488,7 @@ function lexAction(a, v) {
       s.answer = spelling
         ? norm(s.typed) === norm(w)
         : translations(row).includes(v);
-      const old = Object.hasOwn(p.progress, w) ? p.progress[w].stage : -1;
-      const stage = s.answer ? Math.min(old + 1, strengthDays.length - 1) : -1;
-      Object.defineProperty(p.progress, w, {
-        value: {
-          stage,
-          due:
-            Date.now() + (s.answer ? strengthDays[stage] * 86400000 : 600000),
-        },
-        writable: true,
-        configurable: true,
-        enumerable: true,
-      });
+      gradeAtlasWord(w, s.answer);
       if (s.answer) s.correct++;
       store();
       render();

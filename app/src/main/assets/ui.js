@@ -14,6 +14,7 @@ let ui = localStorage.getItem("interface") || "en";
 if (!codes.includes(ui)) ui = "en";
 const t = (key) => strings[key][codes.indexOf(ui)];
 const paths = {
+  talk: "M3 4h15v10H9l-5 4v-4H3z M11 17h5l4 3v-3h1V8",
   calendar: "M3 6h18v15H3z M3 10h18 M7 3v5 M17 3v5 M7 14h3 M14 14h3",
   office:
     "M4 21V5l12-2v18 M16 10h4v11 M2 21h20 M8 8h1 M11 8h1 M8 12h1 M11 12h1 M8 16h1",
@@ -87,7 +88,7 @@ function head(name, tabs, active) {
   document.documentElement.lang = ui;
   $("#top").innerHTML =
     '<div class="brand"><span class="mark">' +
-    icon("book") +
+    icon("talk") +
     "</span>" +
     esc(name) +
     "</div>" +

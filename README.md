@@ -2,6 +2,14 @@
 
 Reklamsız, çevrimdışı bir Android dil çalışma defteri. Uygulama dili İngilizce, Almanca, Türkçe veya İspanyolca olabilir. Öğrenme ve açıklama dili birbirinden bağımsız seçilir. Örneğin arayüz Türkçeyken Almanca açıklamalarla İspanyolca çalışılabilir.
 
+## Günlük çalışma ve konuşma provası
+
+**Bugün** ekranında bir seviye seçip 4, 7 veya 10 etkinliklik oturum başlatabilirsin. Çalışma seçilen düzeyin kelimelerini hafızadan yazma, dikte, cümle kurma ve serbest yazma arasında geçiş yapar. Uzun oturumlarda dil bilgisi ve okuduğunu anlama da vardır. Bir kelimeyi Atlas’a kaydettiğinde günlük kelime çalışmasına katılabilir. Dikte sırasında yazılı ipucuna geçilebilir.
+
+Yanlış yanıtlar oturumda yeniden sorulur ve ertesi günden itibaren seçilecek çalışmalarda öncelik kazanır. Düzeltme turu günlük sayacı ve ilk deneme sonucunu artırmaz. Serbest yazılar örnek yanıtla karşılaştırılmak üzere günlüğe eklenir. Son yedi günün etkinlik sayısı ve her düzeyin duraklatılmış oturumu öğrenme yönüne göre saklanır.
+
+**Konuşma provası** her düzey için iki aşamalı, dört farklı yoldan tamamlanabilen bir konuşma sunar. Niyetini seçmeden önce hedef dilde sesli yanıt vermeyi dene. Ardından örnek ifadeyi ve karşı tarafın yanıtını dinleyebilir veya çevirisini açabilirsin. Prova mikrofon kullanmaz ve telaffuzu puanlamaz.
+
 ## İlk açılış ve günlük kullanım
 
 1. Sağ üstten arayüz dilini seç. **Kursu değiştir** üzerinden bildiğin dili ve öğrenmek istediğin dili belirle.
