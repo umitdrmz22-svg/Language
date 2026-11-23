@@ -91,9 +91,12 @@ public final class MainActivity extends Activity {
         });
     }
     public final class Device {
-        @JavascriptInterface public void speak(String lang, String text) {
+        @JavascriptInterface public void speak(String lang, String text) { play(lang, text, 1.0f); }
+        @JavascriptInterface public void speakSlowly(String lang, String text) { play(lang, text, 0.75f); }
+        private void play(String lang, String text, float rate) {
             runOnUiThread(() -> {
                 if (!ready || !java.util.Arrays.asList("de","en","es").contains(lang)) { speechError(); return; }
+                tts.setSpeechRate(rate);
                 java.util.Set<Voice> voices = tts.getVoices();
                 if (voices != null) for (Voice v : voices) {
                     if (lang.equals(v.getLocale().getLanguage()) && !v.isNetworkConnectionRequired()

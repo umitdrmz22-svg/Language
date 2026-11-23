@@ -399,6 +399,7 @@ function reviewView() {
     t("review") +
     "</h1>" +
     courseLine() +
+    button("labBook", t("hBook") + " · " + unresolved(), "repeat", "soft") +
     "<h2>" +
     t("due") +
     " · " +
@@ -623,9 +624,10 @@ const norm = (s) =>
     .replace(/[.,!?¿¡:;„“”"]/g, "")
     .replace(/[’‘]/g, "'")
     .replace(/\s+/g, " ");
-function speak(value) {
+function speak(value, slow = false) {
   if (window.Device) {
-    Device.speak(state.to, value);
+    if (slow) Device.speakSlowly(state.to, value);
+    else Device.speak(state.to, value);
     return;
   }
   const synth = window.speechSynthesis,
@@ -638,11 +640,16 @@ function speak(value) {
   }
   const msg = new SpeechSynthesisUtterance(value);
   msg.voice = v;
+  msg.rate = slow ? 0.75 : 1;
   synth.cancel();
   synth.speak(msg);
 }
 window.speechUnavailable = () => notify(t("speakerr"));
 function action(a, v) {
+  if (a.startsWith("lab")) {
+    labAction(a, v);
+    return;
+  }
   if (a.startsWith("talk")) {
     talkAction(a, v);
     return;

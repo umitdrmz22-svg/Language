@@ -4,9 +4,11 @@ Reklamsız, çevrimdışı bir Android dil çalışma defteri. Uygulama dili İn
 
 ## Günlük çalışma ve konuşma provası
 
-**Bugün** ekranında bir seviye seçip 4, 7 veya 10 etkinliklik oturum başlatabilirsin. Çalışma seçilen düzeyin kelimelerini hafızadan yazma, dikte, cümle kurma ve serbest yazma arasında geçiş yapar. Uzun oturumlarda dil bilgisi ve okuduğunu anlama da vardır. Bir kelimeyi Atlas’a kaydettiğinde günlük kelime çalışmasına katılabilir. Dikte sırasında yazılı ipucuna geçilebilir.
+**Bugün** ekranında bir seviye seçip 4, 7 veya 10 etkinliklik oturum başlatabilirsin. Çalışma seçilen düzeyin kelimelerini hafızadan yazma, dikte, cümle kurma ve serbest yazma arasında geçiş yapar. Uzun oturumlarda dil bilgisi ve okuduğunu anlama da vardır. Bir kelimeyi Atlas’a kaydettiğinde günlük kelime çalışmasına katılabilir. Dikteyi normal hızda veya %75 hızda yeniden dinleyebilir, istersen yazılı çalışmaya geçebilirsin.
 
 Yanlış yanıtlar oturumda yeniden sorulur ve ertesi günden itibaren seçilecek çalışmalarda öncelik kazanır. Düzeltme turu günlük sayacı ve ilk deneme sonucunu artırmaz. Serbest yazılar örnek yanıtla karşılaştırılmak üzere günlüğe eklenir. Son yedi günün etkinlik sayısı ve her düzeyin duraklatılmış oturumu öğrenme yönüne göre saklanır.
+
+**Çalışma odağı** ile her öğrenme yönü için dengeli çalışma, dinleme, kelime, dil bilgisi veya okuma-yazma seçilebilir. Seçim bir sonraki yeni oturumda kullanılır. İpucuyla tamamlanan denemeler oturum özetinde ayrıca görünür. **Hata defteri** bir yanlışı kendi cevabınla ve örnek yanıtla tekrar açar. Aynı soruyu iki ayrı günde yardımsız doğru yanıtlayınca *Pekişenler* listesine geçer. Konuşmada cevaba başlamana yardım eden hedef dilde kısa ipuçlarını isteğe bağlı açabilirsin.
 
 **Konuşma provası** her düzey için iki aşamalı, dört farklı yoldan tamamlanabilen bir konuşma sunar. Niyetini seçmeden önce hedef dilde sesli yanıt vermeyi dene. Ardından örnek ifadeyi ve karşı tarafın yanıtını dinleyebilir veya çevirisini açabilirsin. Prova mikrofon kullanmaz ve telaffuzu puanlamaz.
 

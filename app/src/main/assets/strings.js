@@ -555,3 +555,118 @@ Object.assign(strings, {
   ],
   backTalk: ["Back", "Zurück", "Geri", "Volver"],
 });
+Object.assign(strings, {
+  hFocus: [
+    "Practice focus",
+    "Trainingsschwerpunkt",
+    "Çalışma odağı",
+    "Enfoque de práctica",
+  ],
+  focusMixed: [
+    "Balanced practice",
+    "Ausgewogen üben",
+    "Dengeli çalışma",
+    "Práctica equilibrada",
+  ],
+  focusListen: [
+    "More listening",
+    "Mehr Hörtraining",
+    "Dinleme ağırlıklı",
+    "Más escucha",
+  ],
+  focusWords: [
+    "More vocabulary",
+    "Mehr Wortschatz",
+    "Kelime ağırlıklı",
+    "Más vocabulario",
+  ],
+  focusGrammar: [
+    "More grammar",
+    "Mehr Grammatik",
+    "Dil bilgisi ağırlıklı",
+    "Más gramática",
+  ],
+  focusReadWrite: [
+    "More reading and writing",
+    "Mehr Lesen und Schreiben",
+    "Okuma ve yazma ağırlıklı",
+    "Más lectura y escritura",
+  ],
+  hNextSession: [
+    "Applies to the next new session.",
+    "Gilt für die nächste neue Einheit.",
+    "Bir sonraki yeni oturumda uygulanır.",
+    "Se aplica a la próxima sesión nueva.",
+  ],
+  hBook: [
+    "Mistake notebook",
+    "Fehlerheft",
+    "Hata defteri",
+    "Cuaderno de errores",
+  ],
+  hBookHelp: [
+    "Recall an answer on two different days to move it to Relearned.",
+    "Rufe eine Antwort an zwei verschiedenen Tagen richtig ab, damit sie als gefestigt gilt.",
+    "Bir ifadeyi iki farklı günde yardımsız doğru yanıtlarsan Pekişenler bölümüne geçer.",
+    "Recuerda una respuesta sin ayuda en dos días distintos para consolidarla.",
+  ],
+  hGet: ["Give me a hint", "Hinweis zeigen", "İpucu al", "Dame una pista"],
+  hOpening: ["Beginning", "Satzanfang", "Başlangıç", "Inicio"],
+  hStarters: [
+    "Help me start my reply",
+    "Hilfe für den Satzanfang",
+    "Cevabıma nasıl başlayabilirim?",
+    "Ayuda para empezar mi respuesta",
+  ],
+  hAccent: [
+    "Compare the accents or umlauts in the model.",
+    "Achte auf die Akzente oder Umlaute in der Vorlage.",
+    "Örnekteki aksanları ve noktalı harfleri karşılaştır.",
+    "Compara las tildes o diéresis del modelo.",
+  ],
+  hArticle: [
+    "Check the article before the noun.",
+    "Prüfe den Artikel vor dem Nomen.",
+    "İsmin önündeki artikeli kontrol et.",
+    "Revisa el artículo anterior al nombre.",
+  ],
+  hOrder: [
+    "The words match. Check their order.",
+    "Die Wörter stimmen. Prüfe ihre Reihenfolge.",
+    "Kelimeler uyuşuyor. Sıralarını kontrol et.",
+    "Las palabras coinciden. Revisa el orden.",
+  ],
+  hActive: ["To revisit", "Noch üben", "Çalışılacaklar", "Por repasar"],
+  hMastered: ["Relearned", "Gefestigt", "Pekişenler", "Consolidadas"],
+  hNoErrors: [
+    "No entries in this list.",
+    "Diese Liste ist leer.",
+    "Bu listede kayıt yok.",
+    "Esta lista está vacía.",
+  ],
+  hEarlier: [
+    "Previous attempt",
+    "Früherer Versuch",
+    "Önceki denemen",
+    "Intento anterior",
+  ],
+  hAssisted: [
+    "With support",
+    "Mit Hilfestellung",
+    "Yardımla çözülen",
+    "Con ayuda",
+  ],
+});
+
+strings.hSlow = [
+  "Listen slowly",
+  "Langsam anhören",
+  "Yavaş dinle",
+  "Escuchar despacio",
+];
+strings.hTextPractice = [
+  "Translation practised. Try again by ear for listening credit.",
+  "Übersetzung geübt. Löse die Aufgabe nach Gehör für deinen Hörfortschritt.",
+  "Çeviriyi çalıştın. Dinleme ilerlemen için bir kez de dinleyerek çöz.",
+  "Has practicado la traducción. Resuelve el ejercicio de oído para avanzar en escucha.",
+];

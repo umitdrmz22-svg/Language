@@ -122,6 +122,7 @@ function practiceHome() {
     "</small></span>" +
     icon("next") +
     "</button>" +
+    bookJump() +
     weekPanel() +
     '<div class="split learnhead"><h2>' +
     t("studyPlan") +
@@ -267,8 +268,12 @@ function composeRound() {
           "reading",
           "order",
         ].slice(0, size);
-  if (pool.some((q) => q.kind === "bank")) modes[size === 4 ? 0 : 5] = "bank";
-  for (const [index, mode] of modes.entries()) {
+  const plan = practiceModes(
+    modes,
+    size,
+    pool.some((q) => q.kind === "bank"),
+  );
+  for (const [index, mode] of plan.entries()) {
     const choices = pool.filter(
       (q) => q.kind === mode && !used.has(promptKey(q)),
     );
@@ -339,6 +344,7 @@ function questionView() {
     body =
       '<div class="hearblock">' +
       button("pPlay", t("listen"), "volume", "playvoice") +
+      button("pSlow", t("hSlow"), "", "soft") +
       button("pSwitch", t("pUseText"), "pen", "quiet") +
       "</div>";
   } else {
@@ -403,6 +409,9 @@ function questionView() {
       (f.ok === false
         ? "<small>" + t("yourAnswer") + " · " + esc(f.text) + "</small>"
         : "") +
+      (f.ok === false && answerDetail(q, f.text)
+        ? "<small>" + esc(answerDetail(q, f.text)) + "</small>"
+        : "") +
       (q.why ? "<small>" + esc(q.why) + "</small>" : "") +
       (q.kind === "write"
         ? "<small>" +
@@ -455,7 +464,19 @@ function questionView() {
     t(instruction) +
     "</p>" +
     body +
+    hintControl(q, e) +
     "</section>"
+  );
+}
+function matchesPracticeAnswer(q, answer, asText) {
+  const wordRecall = q.kind === "recall" || q.kind === "bank";
+  const allowed = q.kind === "listen" && !asText ? [q.answers[0]] : q.answers;
+  return allowed.some(
+    (w) =>
+      norm(w) === norm(answer) ||
+      (wordRecall &&
+        shortAnswer(answer) === norm(answer) &&
+        shortAnswer(w) === norm(answer)),
   );
 }
 function gradePractice(r, q, answer) {
@@ -465,29 +486,24 @@ function gradePractice(r, q, answer) {
     p = levelPractice(),
     cp = practiceState(),
     date = day();
+  const helped = !!e.hinted || (q.kind === "listen" && !!e.asText);
   let ok = null;
   if (q.kind !== "write") {
-    const wordRecall = q.kind === "recall" || q.kind === "bank";
-    const allowed =
-      q.kind === "listen" && !e.asText ? [q.answers[0]] : q.answers;
-    ok = allowed.some(
-      (w) =>
-        norm(w) === norm(answer) ||
-        (wordRecall &&
-          shortAnswer(answer) === norm(answer) &&
-          shortAnswer(w) === norm(answer)),
-    );
+    ok = matchesPracticeAnswer(q, answer, e.asText);
+    if (!ok && !q.retry) rememberMiss(q, answer);
+    if (ok && !q.retry && !helped) recoverMistake(mistakeBook()[key]);
     // Only a first attempt schedules the next day's review. An immediate retry cannot erase a lapse.
     if (!q.retry) {
-      const stage = ok
-        ? Math.min((p.schedule[key]?.stage || 0) + 1, strengthDays.length)
-        : 0;
+      const stage =
+        ok && !helped
+          ? Math.min((p.schedule[key]?.stage || 0) + 1, strengthDays.length)
+          : 0;
       p.schedule[key] = {
         stage,
         due: Date.now() + (stage ? strengthDays[stage - 1] : 1) * 86400000,
       };
-      if (q.kind === "recall") grade(q.unit + "." + q.word, ok);
-      if (q.kind === "bank") gradeAtlasWord(q.word, ok);
+      if (q.kind === "recall") grade(q.unit + "." + q.word, ok && !helped);
+      if (q.kind === "bank") gradeAtlasWord(q.word, ok && !helped);
       if (!ok)
         r.queue.splice(Math.min(r.index + 4, r.queue.length), 0, {
           ...q,
@@ -508,6 +524,7 @@ function gradePractice(r, q, answer) {
     text: answer,
     model: q.answers[0],
     retry: !!q.retry,
+    helped,
   };
   e.feedback = log;
   r.log.push(log);
@@ -521,8 +538,8 @@ function gradePractice(r, q, answer) {
 function recap(last) {
   if (!last) return "";
   const first = last.log.filter((x) => !x.retry),
-    marked = first.filter((x) => x.ok !== null),
-    missed = marked.filter((x) => !x.ok);
+    marked = first.filter((x) => x.ok !== null && !x.helped),
+    missed = first.filter((x) => x.ok === false);
   return (
     '<div class="recap"><div class="modeicon">' +
     icon("check") +
@@ -531,7 +548,7 @@ function recap(last) {
     "</h1><p>" +
     t("pFirst") +
     '</p><strong class="resultscore">' +
-    (marked.length - missed.length) +
+    marked.filter((x) => x.ok).length +
     " / " +
     marked.length +
     "</strong><p>" +
@@ -539,6 +556,13 @@ function recap(last) {
     " " +
     t("pTasks") +
     "</p></div>" +
+    (first.some((x) => x.helped)
+      ? "<p>" +
+        t("hAssisted") +
+        " · " +
+        first.filter((x) => x.helped).length +
+        "</p>"
+      : "") +
     (missed.length
       ? "<h2>" +
         t("pRevisit") +
@@ -624,8 +648,9 @@ async function practiceAction(action, value) {
       inPractice = false;
       tab = "today";
       break;
+    case "pSlow":
     case "pPlay":
-      speak(q.answers[0]);
+      speak(q.answers[0], action === "pSlow");
       return;
     case "pSwitch":
       e.asText = true;
@@ -761,6 +786,20 @@ function conversationView() {
         '</h2><p class="talkhint">' +
         t("pSpeakFirst") +
         "</p>" +
+        '<details class="talkhints"><summary>' +
+        t("hStarters") +
+        "</summary>" +
+        node.paths
+          .map(
+            (b) =>
+              "<p><small>" +
+              esc(b.intent[state.from]) +
+              "</small><b>" +
+              esc(openingWords(b.say[state.to])) +
+              "</b></p>",
+          )
+          .join("") +
+        "</details>" +
         node.paths
           .map((b, i) =>
             button("talkChoose", b.intent[state.from], "", "choice", i),
